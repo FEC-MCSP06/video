@@ -49,8 +49,7 @@ class App extends React.Component{
           videoName={this.state.videoName}
           changeVideoSrc={this.changeVideoSrc}
         />
-        <button onClick={()=>{dispatchEvent(changeVideoKey)}}>Change videoKey button</button>
-      </div>
+        </div>
     )
   }
 }
