@@ -29,7 +29,7 @@ app.get('/index',(req,res)=>{
     
 })
 // to stream the video requested
-app.get('/video/:videoName', function(req, res) {
+app.get('/video/:videoName', (req, res)=> {
     const videoName = req.params.videoName
     const path = `./videos/${videoName}.mp4`
     const stat = fs.statSync(path)
@@ -59,7 +59,19 @@ app.get('/video/:videoName', function(req, res) {
       res.writeHead(200, head)
       fs.createReadStream(path).pipe(res)
     }
-  });
+    });
+
+
+  // to remove the last stream that was running
+
+  
+  app.get('/removeVideoSteam/:videoName',(req,res)=>{
+    const videoName = req.params.videoName
+    const path = `./videos/${videoName}.mp4`
+    const readable = fs.createReadStream(path)
+    readable.unpipe(res)
+    res.send('disconnected')
+    })
 // causes our server to listen for incoming reuqests to this port
 app.listen(PORT, ()=>{
     console.log(`LISTINING ON PORT ${PORT}`)

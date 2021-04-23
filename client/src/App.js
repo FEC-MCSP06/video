@@ -17,35 +17,33 @@ class App extends React.Component{
       dislikes: 543,
       videoDescription: 'This AMV features the song Code Monkey by Jonathan Coulton, using footage from the anime Black Heaver.',
       publisher: 'Nic Neidenbach',
-      pubImgStyle: null,
     }
     this.changeVideoSrc = this.changeVideoSrc.bind(this)
   }
-  changeVideoSrc(videoKey){
-    let videoName = null
-    axios.get(`http://localhost:3201/db/${videoKey}`)
+  async changeVideoSrc(videoKey){
+    
+    await axios.get(`http://localhost:3201/db/${videoKey}`)
     .then(res =>{
-      videoName = res.data.name
-      this.setState({videoName: videoName})
-      this.setState({videoKey: videoKey})
-      this.setState({numberOfViews: res.data.view_count})
-      this.setState({dateOfCreation: res.data.created_on})
-      this.setState({likes:res.data.likes})
-      this.setState({likes:res.data.dislikes})
-      this.setState({videoDescription: res.data.discription})
-      this.setState({publisher:res.data.publisher})
+
+      this.setState({
+      videoName: res.data.name,
+      videoKey: videoKey,
+      numberOfViews: res.data.view_count,
+      dateOfCreation: res.data.created_on,
+      likes:res.data.likes,
+      likes:res.data.dislikes,
+      videoDescription: res.data.discription,
+      publisher:res.data.publisher
+    })
     })
   }
 
   componentDidMount(){
-    this.setState({pubImgStyle:`background-color:${arrOfColorsForPubliserImg[Math.floor(Math.random()*5)]}`})
+    window.addEventListener('changeVideoKey',(e)=>{
+      this.changeVideoSrc(e.detail.videoKey)})
   }
   render(){
-    let changeVideoKey = new CustomEvent('changeVideoKey',{
-      detail:{
-        videoKey: 5
-      }
-    })
+    
     let displayVideoName = this.state.videoName.split('-').join(' ')
     let displayNumberOfViews = parseInt(this.state.numberOfViews)
     return(
@@ -53,7 +51,7 @@ class App extends React.Component{
         <VideoPlayer
           key={this.state.videoKey}
           videoName={this.state.videoName}
-          changeVideoSrc={this.changeVideoSrc}
+          previousVideoName={this.state.previousVideoName}
           />
         <div id='videoPlayerFooter'>
           <div id='videoPlayerFooterLeft'>
@@ -62,8 +60,8 @@ class App extends React.Component{
           </div>
           <div id='videoPlayerFooterRight'>
             <div id='innerVideoPlayerFooterRight'>
-              <p id='likeAndDislike'>TODO:thumbsUp  {this.state.likes}</p>
-              <p id='likeAndDislike'>TODO:thumbsDown {this.state.dislikes}</p>
+              <p id='likeAndDislike'><i className='fas fa-thumbs-up'></i>  {this.state.likes}</p>
+              <p id='likeAndDislike'><i className='fas fa-thumbs-down'></i> {this.state.dislikes}</p>
               <button id='videoShareBtn'>Share</button>
               <button id='videoSaveBtn'>Save</button>
               <button id='videoMoreBtn'>...</button>
