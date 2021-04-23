@@ -22,7 +22,6 @@ class App extends React.Component{
     this.changeVideoSrc = this.changeVideoSrc.bind(this)
   }
   changeVideoSrc(videoKey){
-    console.log(videoKey)
     let videoName = null
     axios.get(`http://localhost:3201/db/${videoKey}`)
     .then(res =>{
